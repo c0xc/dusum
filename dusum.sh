@@ -139,16 +139,28 @@ for dir in $also_check "$@"; do
     rm "$pipe"
 
     # Format size
-    total_size_human=""
+    human=""
     if type numfmt >/dev/null 2>&1; then
-        total_size_human=$(numfmt \
+        human=$(numfmt \
             --to=iec --suffix=B --format="%3f" "$total_size")
+    else
+        if [[ $total_size -lt $((1024**1)) ]]; then
+            human=$(echo $(( $total_size / $((1024**0)) )) B)
+        elif [[ $total_size -lt $((1024**2)) ]]; then
+            human=$(echo $total_size \($(( $total_size / $((1024**1)) )) KB\))
+        elif [[ $total_size -lt $((1024**3)) ]]; then
+            human=$(echo $total_size \($(( $total_size / $((1024**2)) )) MB\))
+        elif [[ $total_size -lt $((1024**4)) ]]; then
+            human=$(echo $total_size \($(( $total_size / $((1024**3)) )) GB\))
+        else
+            human=$(echo $total_size \($(( $total_size / $((1024**3)) )) GB\))
+        fi
     fi
 
     # Summary string (per directory)
     str=""
-    if [[ ! -z "$total_size_human" && $_B -eq 0 ]]; then
-        str="${total_size_human}"
+    if [[ ! -z "$human" && $_B -eq 0 ]]; then
+        str="${human}"
     else
         str="${total_size}B"
     fi

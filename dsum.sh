@@ -23,8 +23,8 @@ for dir in $also_check "$@"; do
         continue
     fi
 
-    # find -> quote (perl) -> xargs -> stat -> awk (count)
-    b=$(find "$dir" -type f -exec ls -l {} \; | \
+    # find -> ls -> awk (count)
+    b=$(find "$dir" -type f -exec ls -ln {} \; | \
         awk '{total += $5} END {print total, ""}')
     b=$(echo "$b" | tr -d '[[:space:]]')
     [[ -z "$b" ]] && b=0
