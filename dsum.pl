@@ -5,7 +5,6 @@ use warnings;
 
 use Getopt::Long;
 use File::Find;
-use Data::Dumper;
 
 # Options
 my $_quiet;
